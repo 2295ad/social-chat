@@ -50,6 +50,7 @@ function Welcome(props) {
                               style={{borderBottom: '1px solid'}}
                               mb={'6px'}
                               justifyContent='center' 
+                              key={index}
                               >
                                 <AvatarBox onClick={()=>alert(index+1)}>
                                   <Avtar src={`../../assets/nerd_${index+1}`}/>
