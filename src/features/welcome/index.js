@@ -9,14 +9,16 @@ import {ModalBox, Avtar} from '../../components';
 import {joinChat, setAvatar} from '../../helpers/actions';
 import {USER_TYPE} from '../../helpers/constants';
 
+const Wrapper = styled(Box)`
+margin-top:100px;
+`
+const AvatarBox = styled(Box)`
+cursor:pointer;
+`
+
 function Welcome(props) {
 
-    const Wrapper = styled(Box)`
-      margin-top:100px;
-      `
-    const AvatarBox = styled(Box)`
-      cursor:pointer;
-      `
+
     const [isOpen,setOpen] = useState(false);
     const history = useHistory();
 

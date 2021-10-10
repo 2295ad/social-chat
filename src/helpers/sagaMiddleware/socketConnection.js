@@ -47,7 +47,7 @@ function* subscribe(socket) {
 export function* flow() {
     yield take(SOCKET_CONSTANTS.SOCKET_CONN_REQ)
     const socket = yield call(createSocketChannel)
-    yield put({type:SOCKET_CONSTANTS.CONNECTED,data:'active'})
+    yield put({type:SOCKET_CONSTANTS.CONNECTED,data:SOCKET_CONSTANTS.CONNECTED})
     yield fork(read, socket)
     yield fork(send, socket)
     yield put(sendMsg({type:USER_EVENT.IS_SUPER_USER_AVAILABLE,query:""}));
