@@ -2,9 +2,12 @@ import {useState, useEffect} from 'react';
 import {Button, Box, Flex, Text} from 'rebass/styled-components';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
+import { useHistory } from "react-router-dom";
+
 
 import {ModalBox, Avtar} from '../../components';
-import {joinChat} from '../../helpers/actions';
+import {joinChat, setAvatar} from '../../helpers/actions';
+import {USER_TYPE} from '../../helpers/constants';
 
 function Welcome(props) {
 
@@ -15,11 +18,28 @@ function Welcome(props) {
       cursor:pointer;
       `
     const [isOpen,setOpen] = useState(false);
+    const history = useHistory();
+
     
     const openModal = ()=> setOpen(true);
     const closeModal = ()=> setOpen(false);
 
-    const socketConReq = ()=>props.dispatch(joinChat());
+    const socketConReq = ()=>{
+      props.dispatch(joinChat());
+    };
+    const avatarClick = (avatarRank) => {
+      props.dispatch(setAvatar(avatarRank));
+      history.push('/chat-room');
+    }
+
+    useEffect(()=>{
+      if(props.userType===USER_TYPE.USER){
+        history.push('/chat-room');
+      }else if(props.userType===USER_TYPE.SUPER_USER){
+        openModal();
+      }
+      /* eslint-disable */
+    },[props.userType])
 
      
   return (
@@ -52,7 +72,7 @@ function Welcome(props) {
                               justifyContent='center' 
                               key={index}
                               >
-                                <AvatarBox onClick={()=>alert(index+1)}>
+                                <AvatarBox onClick={()=>avatarClick(index+1)}>
                                   <Avtar src={`../../assets/nerd_${index+1}`}/>
                                 </AvatarBox>
                                 <Text as = "p" fontSize={[ 3 ]} ml={'10px'}>{ele}</Text>
@@ -67,7 +87,8 @@ function Welcome(props) {
 
 const mapStateToProps = function(state) {
   return {
-    userType: state.userType
+    userType: state.userType,
+    socketConnection: state.socketConnection
   }
 }
 

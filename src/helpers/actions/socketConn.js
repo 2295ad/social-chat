@@ -19,3 +19,4 @@ export const superUserSet = (data)=>{
 export const superUserAvailability = (data)=>{
     return {type:USER_EVENT.SUPER_USER_IS_AVAILABLE,data}
 }
+

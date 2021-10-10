@@ -13,7 +13,7 @@ const persistConfig = {
     key: 'root',
     storage: storageSession,
     stateReconciler: autoMergeLevel2, // see "Merge Process" section for details.
-    whiteList:['']
+    blacklist:['userType','socketConnection','superUserNudge']
 }
 const pReducer = persistReducer(persistConfig, reducer);
 const sagaMiddleware = createSagaMiddleware()
