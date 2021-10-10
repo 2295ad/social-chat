@@ -15,6 +15,8 @@ export const USER_EVENT = {
     SUPER_USER_IS_AVAILABLE:'SUPER_USER_IS_AVAILABLE',
     SUPER_USER_SET:'SUPER_USER_SET',
     SUPER_USER_NUDGE:'SUPER_USER_NUDGE',
+    PUSH_POST:'PUSH_POST',
+    PUSH_POST_API:'PUSH_POST_API'
 }
 
 export const USER_TYPE={
@@ -23,3 +25,5 @@ export const USER_TYPE={
 }
 
 export const AVATAR = 'AVATAR';
+
+export const AVATAR_NAMES = ['Rayman','Kayzee','Nerddy','Hacker','Queenn'];

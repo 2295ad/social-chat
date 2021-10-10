@@ -4,7 +4,7 @@ import io from 'socket.io-client';
 
 import {SOCKET_CONSTANTS, USER_EVENT} from '../constants';
 import {send} from './sendMsg';
-import {availableUser,superUserSet,superUserAvailability, sendMsg} from '../actions';
+import {availableUser,superUserSet, sendMsg} from '../actions';
 
 
 function createSocketChannel(){
@@ -34,11 +34,11 @@ function* subscribe(socket) {
 
       const userAvailability = info => emit(availableUser(info));
       const setSuper = info => emit(superUserSet(info));
-      const announceSuperAvailability = info => emit(superUserAvailability(info));
+      // const announceSuperAvailability = info => emit(superUserAvailability(info));
 
       socket.on(USER_EVENT.AVAILABLE_USER, userAvailability);
       socket.on(USER_EVENT.SUPER_USER_SET, setSuper);
-      socket.on(USER_EVENT.SUPER_USER_IS_AVAILABLE, announceSuperAvailability);
+      // socket.on(USER_EVENT.SUPER_USER_IS_AVAILABLE, announceSuperAvailability);
       return () => {}
     })
   }

@@ -1,6 +1,6 @@
 import { Switch, Route } from 'react-router-dom';
 
-import Welcome from './features/welcome';
+import Welcome from './features/JoinChat';
 import ProtectedRoute from './components/ProtectedRoute';
 import {ChatRoom} from './features/Chat-room';
 

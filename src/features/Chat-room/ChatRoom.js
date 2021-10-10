@@ -5,10 +5,11 @@ import {useState,useEffect} from 'react';
 import styled from 'styled-components';
 import { Input} from '@rebass/forms';
 
-import {sendMsg} from '../../helpers/actions';
-import {USER_EVENT,USER_TYPE, SOCKET_CONSTANTS} from '../../helpers/constants';
+import {sendMsg, pushPost, pushPostApi} from '../../helpers/actions';
+import {USER_EVENT, SOCKET_CONSTANTS, AVATAR_NAMES} from '../../helpers/constants';
 import {ModalBox, Avtar, Grid} from '../../components';
 import {apiService} from '../../helpers/apiServices';
+import {timeConverter} from '../../utils/timeParser';
 
 const AvatarBox = styled(Box)`
     cursor:pointer;
@@ -22,15 +23,15 @@ const PostSection= styled(Box)`
     `
 const CommentBox = styled(Box)`
     min-height: 10vh;
-    border:1px solid black;
-    margin-top:10px;
+    border:2px solid #FD1F09;
+    border-radius:5px;
+    margin-top:30px;
 `
 
 const ChatRoom = (props)=>{
 
     const [isOpen,setOpen] = useState(false);
     const [userComment, setComment] = useState("");
-    const [post,setPosts] = useState([]);
 
     const openModal = ()=> setOpen(true);
     const closeModal = ()=> setOpen(false);
@@ -45,34 +46,33 @@ const ChatRoom = (props)=>{
 
     const handleSubmit = (el)=>{
         el.preventDefault();
-        setComment("")
-        console.log('1')
+        const body = {
+            data:{
+                content:userComment,
+                name:AVATAR_NAMES[props.avatar-1],
+                index:props.avatar,
+                ts:Math.floor(Date.now() / 1000),
+            },
+            url:'http://localhost:3001/users/savePost',
+        }
+        apiService.postData(body)
+            .then((res)=>{
+                if(res.success){
+                    body.data.postcount=props.posts.length?props.posts.length:1;
+                    props.dispatch(pushPost(body.data));
+                    setComment("");
+                }
+            }).catch((e)=>{console.error(e)})
     }
 
-    const checkIsSuperUser = ()=>{
-        if(props.userType===USER_TYPE.SUPER){
-            debugger;
-            props.dispatch(sendMsg({type:USER_EVENT.EXIT,query:""}));
-        }
-    };
-
     useEffect(()=>{
-        apiService.getData('http://localhost:3001/fetchPost',{timestamp:Math.floor(Date.now() / 1000)}) 
+        apiService.getData('http://localhost:3001/users/fetchPosts',{count:10}) 
                     .then((res)=>{
-                        setPosts(res.data);
+                        if(res.success && res?.data && res.data.length){
+                            props.dispatch(pushPostApi(res.data));
+                        }
                     })
-                    .catch((e)=>console.error(e));
-
-        window.onbeforeunload = (event)=>{
-            checkIsSuperUser();
-            const e = event || window.event;
-            // Cancel the event
-            e.preventDefault();
-            if (e) {
-                e.returnValue = ''; 
-            }
-            return '';
-        }   
+                    .catch((e)=>console.error(e)); 
         /* eslint-disable*/
     },[]);
    
@@ -114,7 +114,7 @@ const ChatRoom = (props)=>{
                         Choose your Avatar
                     </Text>
                     {   
-                    ['Rayman','Kayzee','Nerddy','Hacker','Queenn'].map((ele,index)=>{
+                    AVATAR_NAMES.map((ele,index)=>{
                         return <Flex alignItems='center' 
                                     flexDirection='row' 
                                     style={{borderBottom: '1px solid'}}
@@ -134,11 +134,12 @@ const ChatRoom = (props)=>{
 
             <Flex flexDirection='column'>
                 <PostSection pb={2} userType={props.userType} >
-                    {[1,4,4].map((el,index)=>{
+                    {props.posts.map((el,index)=>{
                             return (
-                                <Grid name={'Kayzeey'} 
-                                     index={1} ts={111111111111111} 
-                                     content={'AGAGGAGAGAGAGGAGAGAGAGAGAGAGAGAAG'}
+                                <Grid name={el.name} 
+                                     index={el.index}
+                                     ts={timeConverter(el.ts)} 
+                                     content={el.content}
                                      key={index}
                                 />
                             )
@@ -146,25 +147,28 @@ const ChatRoom = (props)=>{
                 </PostSection>
                 {props.userType==='SUPER_USER'&&
                 <CommentBox p={2}>
-                    <form onSubmit={handleSubmit}>   
+                    <Box as ='form' onSubmit={handleSubmit}>   
                         <Flex flexDirection='row'>
-                            {props.socketConnection===SOCKET_CONSTANTS.CONNECTED ?
                             <Input
                                 id='post'
                                 type='text'
                                 value={userComment}
                                 onChange={saveComment}
-                                placeholder='Type your message & press Enter'
-                            />:<Text
-                                as="p"
-                                fontSize={[ 2 ]}
-                                color='#1D31F9'
-                                textAlign="center"
-                                mb={'20px'}>
-                                Please try reconnecting again!
-                            </Text>}
+                                placeholder='Type your message & press Enter or Submit'      
+                            />
+                            {props.socketConnection===SOCKET_CONSTANTS.CONNECTED ?
+                                <Button variant='outline' ml={2}>
+                                    Submit
+                                </Button>:<Text
+                                    as="p"
+                                    fontSize={[ 2 ]}
+                                    color='#1D31F9'
+                                    textAlign="center"
+                                    mb={'20px'}>
+                                    Please try reconnecting again!
+                                </Text>}
                         </Flex>
-                    </form>
+                    </Box>
                 </CommentBox>
                 }
             </Flex>
@@ -177,6 +181,8 @@ const mapStateToProps = function(state){
         userType:state.userType,
         superUserNudge:state.superUserNudge,
         socketConnection:state.socketConnection,
+        posts:state.posts,
+        avatar:state.avatar,
     }
 }
 export default connect(mapStateToProps)(ChatRoom);

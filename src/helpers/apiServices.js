@@ -5,7 +5,6 @@ async function getData(url, body=false){
         let data = {}
         if(body){
             data.params = body
-            data.body = body
             data.headers = { 'Content-Type':"application/json"}
         }
         let response = await axios(url,data)

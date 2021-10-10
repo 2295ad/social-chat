@@ -1,7 +1,7 @@
 import { fork, all, takeEvery,put} from 'redux-saga/effects';
 
 import {flow} from './socketConnection';
-import {USER_EVENT,SOCKET_CONSTANTS, USER_TYPE} from './../constants';
+import {USER_EVENT, USER_TYPE} from './../constants';
 import { sendMsg} from '../actions';
 
 
@@ -27,6 +27,6 @@ export default function* rootSaga() {
     yield all([
       fork(flow),
       takeEvery(USER_EVENT.AVAILABLE_USER, checkUserType ),
-      takeEvery(USER_EVENT.SUPER_USER_IS_AVAILABLE,superUserAvailability)
+      takeEvery(USER_EVENT.SUPER_USER_IS_AVAILABLE,superUserAvailability),
     ])
   };

@@ -11,7 +11,13 @@ export function userType(state="",action){
                 return USER_TYPE.USER;
             }
         };
-        case USER_EVENT.AVAILABLE_USER:return USER_TYPE.USER;
+        case USER_EVENT.AVAILABLE_USER:{
+            if(action.data===USER_TYPE.USER){
+                return action.data;
+            }else{
+                return "";
+            }
+        }
         default:return state;
     }
 } 
@@ -26,6 +32,18 @@ export function avatar(state="",action){
 export function superUserNudge(state="",action){
     switch(action.type){
         case USER_EVENT.SUPER_USER_IS_AVAILABLE: return action.data;
+        default:return state;
+    }
+}
+
+export function posts(state=[],action){
+    switch(action.type){
+        case USER_EVENT.PUSH_POST:{
+            return [...state,action.data]
+        };
+        case USER_EVENT.PUSH_POST_API:{
+            return action.data;
+        }
         default:return state;
     }
 }

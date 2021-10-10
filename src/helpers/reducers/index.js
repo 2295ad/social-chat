@@ -1,7 +1,7 @@
 import { combineReducers } from 'redux';
 
 import {socketConnection} from './socketConnection';
-import {userType, avatar, superUserNudge} from './user';
+import {userType, avatar, superUserNudge,posts} from './user';
 
 
 export default combineReducers({
@@ -9,4 +9,5 @@ export default combineReducers({
     userType,
     avatar,
     superUserNudge,
+    posts
  })

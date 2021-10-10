@@ -7,7 +7,7 @@ import { useHistory } from "react-router-dom";
 
 import {ModalBox, Avtar} from '../../components';
 import {joinChat, setAvatar} from '../../helpers/actions';
-import {USER_TYPE} from '../../helpers/constants';
+import {USER_TYPE, AVATAR_NAMES} from '../../helpers/constants';
 
 const Wrapper = styled(Box)`
 margin-top:100px;
@@ -37,7 +37,7 @@ function Welcome(props) {
     useEffect(()=>{
       if(props.userType===USER_TYPE.USER){
         history.push('/chat-room');
-      }else if(props.userType===USER_TYPE.SUPER_USER){
+      }else if(props.userType===USER_TYPE.SUPER){
         openModal();
       }
       /* eslint-disable */
@@ -66,7 +66,7 @@ function Welcome(props) {
                 Choose your Avatar
               </Text>
             {   
-              ['Rayman','Kayzee','Nerddy','Hacker','Queenn'].map((ele,index)=>{
+              AVATAR_NAMES.map((ele,index)=>{
                 return <Flex alignItems='center' 
                               flexDirection='row' 
                               style={{borderBottom: '1px solid'}}
